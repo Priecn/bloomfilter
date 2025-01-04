@@ -5,22 +5,34 @@ import org.example.hash.HashingStrategy;
 import java.util.Arrays;
 
 public class BloomFilter {
-    private final boolean[] filter;
+    private final byte[] filter;
     private final int size;
     private final HashingStrategy hashingStrategy;
 
     public BloomFilter(int size, HashingStrategy hashingStrategy) {
         this.size = size;
-        filter = new boolean[size];
+        filter = new byte[size];
         this.hashingStrategy = hashingStrategy;
     }
 
     public void add(String key) {
-        filter[hashingStrategy.hash(key, size)] = true;
+        int hash = hashingStrategy.hash(key, size);
+
+        // as each byte can have 8 bits
+        int arrIndex = hash / 8;
+        int bitIndex = hash % 8;
+
+        filter[arrIndex] = (byte)(filter[arrIndex] | (1 << bitIndex));
     }
 
     public boolean doesExist(String key) {
-        return filter[hashingStrategy.hash(key, size)];
+        int hash = hashingStrategy.hash(key, size);
+
+        // as each byte can have 8 bits
+        int arrIndex = hash / 8;
+        int bitIndex = hash % 8;
+
+        return (filter[arrIndex] & (1 << bitIndex)) > 0;
     }
 
     public void printFilter() {
