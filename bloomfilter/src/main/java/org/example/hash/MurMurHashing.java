@@ -4,7 +4,6 @@ package org.example.hash;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
